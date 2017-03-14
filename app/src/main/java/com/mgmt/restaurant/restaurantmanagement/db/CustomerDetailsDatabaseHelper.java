@@ -1,4 +1,4 @@
-package com.mgmt.restaurant.restaurantmanagement.model;
+package com.mgmt.restaurant.restaurantmanagement.db;
 
 import android.content.ContentValues;
 import android.content.Context;

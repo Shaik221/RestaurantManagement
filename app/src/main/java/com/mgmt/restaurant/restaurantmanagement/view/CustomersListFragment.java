@@ -20,11 +20,10 @@ import com.mgmt.restaurant.restaurantmanagement.dagger.component.DaggerCustomerS
 import com.mgmt.restaurant.restaurantmanagement.dagger.contracts.CustomersListContract;
 import com.mgmt.restaurant.restaurantmanagement.dagger.module.CustomersScreenModule;
 import com.mgmt.restaurant.restaurantmanagement.model.CustomerDetails;
-import com.mgmt.restaurant.restaurantmanagement.model.CustomerDetailsDatabaseHelper;
+import com.mgmt.restaurant.restaurantmanagement.db.CustomerDetailsDatabaseHelper;
 import com.mgmt.restaurant.restaurantmanagement.model.adapters.CustomersListAdapter;
 import com.mgmt.restaurant.restaurantmanagement.presenter.GetCustomersScreenPresenter;
 import com.mgmt.restaurant.restaurantmanagement.utils.ConnectivityReceiver;
-import com.mgmt.restaurant.restaurantmanagement.utils.LocalStoreCustomerDetails;
 import com.mgmt.restaurant.restaurantmanagement.utils.UserAlerts;
 import com.mgmt.restaurant.restaurantmanagement.view.widgets.TransparentProgressDialog;
 

@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mgmt.restaurant.restaurantmanagement.R;
@@ -18,7 +17,6 @@ import java.util.ArrayList;
 public class CustomersListAdapter extends BaseAdapter{
 
     private ArrayList<CustomerDetails> myList = new ArrayList();
-    private LinearLayout cardRequestLayout;
     private LayoutInflater inflater;
     private Context context;
     private CustomerDetails currentListData;
@@ -62,7 +60,7 @@ public class CustomersListAdapter extends BaseAdapter{
         if(currentListData !=null) {
             mViewHolder.firstName.setText(currentListData.getCustomerFirstName());
             mViewHolder.lastName.setText(currentListData.getCustomerLastName());
-           // mViewHolder.userId.setText(currentListData.getId());
+            mViewHolder.userId.setText(currentListData.getId().toString());
         }
         return convertView;
     }
