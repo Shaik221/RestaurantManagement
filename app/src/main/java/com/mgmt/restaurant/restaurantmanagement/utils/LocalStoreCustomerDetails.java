@@ -3,7 +3,6 @@ package com.mgmt.restaurant.restaurantmanagement.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.mgmt.restaurant.restaurantmanagement.model.CustomerDetails;

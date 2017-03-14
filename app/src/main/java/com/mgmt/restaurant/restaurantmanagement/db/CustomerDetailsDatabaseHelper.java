@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.mgmt.restaurant.restaurantmanagement.model.CustomerDetails;
+import com.mgmt.restaurant.restaurantmanagement.model.TablesDetails;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +25,35 @@ public class CustomerDetailsDatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_FIRST_NAME = "firstname";
     private static final String KEY_LAST_NAME = "lastname";
 
+    //reserve table details
+    private static final String KEY_TABLE_ID = "table_id";
+    private static final String TABLE_AVILABLE = "table_avilable";
+
     private String[] allColumns = { KEY_USER_ID,
             KEY_FIRST_NAME, KEY_LAST_NAME };
+
+    //customer table creation
+    private static final String CREATE_USERS_TABLE = "CREATE TABLE " + TABLE_USERS +
+            "(" +
+            KEY_USER_ID + " INTEGER PRIMARY KEY," +
+            KEY_FIRST_NAME + " TEXT NOT NULL," +
+            KEY_LAST_NAME + " TEXT NOT NULL" +
+            ")";
+
+    // Table Names
+    private static final String TABLE_RESERVE = "Tables";
+
+
+    private String[] allTableColumns = { KEY_TABLE_ID, TABLE_AVILABLE};
+    //reserve table creation
+    private static final String CREATE_RESERVE_TABLE = "CREATE TABLE " + TABLE_RESERVE +
+            "(" +
+            KEY_TABLE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+
+            TABLE_AVILABLE + " TEXT NOT NULL" +
+            ")";
+
+
+
 
     private static CustomerDetailsDatabaseHelper sInstance;
 
@@ -60,14 +88,8 @@ public class CustomerDetailsDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        String CREATE_USERS_TABLE = "CREATE TABLE " + TABLE_USERS +
-                "(" +
-                    KEY_USER_ID + " INTEGER PRIMARY KEY," +
-                    KEY_FIRST_NAME + " TEXT," +
-                    KEY_LAST_NAME + " TEXT" +
-                ")";
-
         db.execSQL(CREATE_USERS_TABLE);
+        db.execSQL(CREATE_RESERVE_TABLE);
     }
     
     // Called when the database needs to be upgraded.
@@ -78,6 +100,7 @@ public class CustomerDetailsDatabaseHelper extends SQLiteOpenHelper {
         if (oldVersion != newVersion) {
             // Simplest implementation is to drop all old tables and recreate them
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESERVE);
             onCreate(db);
         }
     }
@@ -122,9 +145,48 @@ public class CustomerDetailsDatabaseHelper extends SQLiteOpenHelper {
 
     private CustomerDetails cursorToComment(Cursor cursor) {
         CustomerDetails comment = new CustomerDetails(cursor.getString(1),cursor.getString(2),Integer.parseInt(cursor.getString(0)));
-/*        comment.setId(Integer.parseInt(cursor.getString(0)));
-        comment.setCustomerFirstName(cursor.getString(1));
-        comment.setCustomerLastName(cursor.getString(2));*/
+        return comment;
+    }
+
+
+    public void putTables(List<TablesDetails> tablesList){
+        if(tablesList!=null && tablesList.size()>0){
+            for (int i = 0; i < tablesList.size() ; i++) {
+                createTable(tablesList.get(i));
+            }
+        }
+    }
+
+    public long createTable(TablesDetails cust) {
+        ContentValues values = new ContentValues();
+        SQLiteDatabase database = getWritableDatabase();
+        values.put(TABLE_AVILABLE, cust.isAvailable());
+
+        long insertId = database.insert(TABLE_RESERVE, null,
+                values);
+        return insertId;
+    }
+
+
+    public ArrayList<TablesDetails> getAllTables() {
+        ArrayList<TablesDetails> comments = new ArrayList<TablesDetails>();
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.query(TABLE_RESERVE,
+                allTableColumns, null, null, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            TablesDetails comment = cursorToTableComment(cursor);
+            comments.add(comment);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        return comments;
+    }
+
+    private TablesDetails cursorToTableComment(Cursor cursor) {
+        TablesDetails comment = new TablesDetails(Integer.parseInt(cursor.getString(0)),cursor.getString(1));
         return comment;
     }
 

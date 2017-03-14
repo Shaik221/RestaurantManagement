@@ -9,18 +9,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mgmt.restaurant.restaurantmanagement.R;
+import com.mgmt.restaurant.restaurantmanagement.model.TablesDetails;
 
 import java.util.ArrayList;
 
 
 public class CustomTableAdapter extends BaseAdapter {
 	private Context context;
-	private ArrayList<Boolean> myList = new ArrayList();
+	private ArrayList<TablesDetails> myList = new ArrayList();
 	private CustomTableAdapter.MyViewHolder mViewHolder;
 	private Boolean currentTableStatus;
 	private LayoutInflater inflater;
 
-	public CustomTableAdapter(Context context, ArrayList<Boolean> myList) {
+	public CustomTableAdapter(Context context, ArrayList<TablesDetails> myList) {
 		this.context = context;
 		this.myList = myList;
 		inflater = LayoutInflater.from(this.context);
@@ -64,7 +65,7 @@ public class CustomTableAdapter extends BaseAdapter {
 
 	@Override
 	public Boolean getItem(int position) {
-		return myList.get(position);
+		return myList.get(position).isAvailable().equals("true");
 	}
 
 	@Override
