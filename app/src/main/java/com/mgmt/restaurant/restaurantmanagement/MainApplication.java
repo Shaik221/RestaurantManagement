@@ -10,6 +10,8 @@ import com.mgmt.restaurant.restaurantmanagement.dagger.module.NetModule;
 public class MainApplication extends Application {
     private com.mgmt.restaurant.restaurantmanagement.dagger.component.NetComponent mNetComponent;
     private static MainApplication mInstance;
+    public static final String SHARED_PREF_KEY="ReservTableDetais";
+    public static final int TIME_INTERVAL = 10;
 
     @Override
     public void onCreate() {

@@ -2,66 +2,42 @@ package com.mgmt.restaurant.restaurantmanagement.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
-import com.google.gson.Gson;
-import com.mgmt.restaurant.restaurantmanagement.model.CustomerDetails;
-
-import java.util.ArrayList;
+import java.util.Calendar;
 
 
 public class LocalStoreCustomerDetails {
 
     static LocalStoreCustomerDetails localStoreCustomerDetails;
 
-    public static LocalStoreCustomerDetails getInstance(){
-        if(localStoreCustomerDetails==null){
+    public static LocalStoreCustomerDetails getInstance() {
+        if (localStoreCustomerDetails == null) {
             localStoreCustomerDetails = new LocalStoreCustomerDetails();
         }
         return localStoreCustomerDetails;
     }
 
+    //store in shared preference
+    public void preserveDetails(Context context, String key, String firstName, String lastName, int position) {
 
-    public void preserveCustomersList(Context context, String key, ArrayList<CustomerDetails> customerDetailsArrayList) {
+        SharedPreferences sharedpreferences = context.getSharedPreferences(key, Context.MODE_PRIVATE);
+        //store the data in shared preference along with current time
 
-        try {
-            Gson gson = new Gson();
-            String user_json = gson.toJson(customerDetailsArrayList);
-            SharedPreferences sharedpreferences = PreferenceManager
-                    .getDefaultSharedPreferences(context.getApplicationContext());
-
-            SharedPreferences.Editor editor = sharedpreferences.edit();
-            editor.putString(key, user_json);
-            editor.apply();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putString("CustomerFirstName", firstName);
+        editor.putString("CustomerLastName", lastName);
+        editor.putInt("TableID", position);
+        editor.putInt("CurrentTime", Calendar.getInstance().get(Calendar.MINUTE));
+        editor.apply();
     }
 
-    /*public ArrayList<CustomerDetails> getCustomersDetails(Context context){
+    //clear the shared preference
+    public void clearDetails(Context context, String key)
+    {
+        SharedPreferences prefs = context.getSharedPreferences(key, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear();
+        editor.apply();
+    }
 
-        SharedPreferences sharedpreferences = context.getSharedPreferences("CustomersList",
-                Context.MODE_PRIVATE);
-        String customerList = sharedpreferences.getString("CustomersList","");
-
-
-        if(customerList!=null && customerList.length()>0){
-            Gson gson = new Gson();
-            ArrayList<CustomerDetails> favoriteItems = gson.fromJson(jsonFavorites,BeanSampleList[].class);
-            favorites = Arrays.asList(favoriteItems);
-            favorites = new ArrayList(favorites);,
-
-            Gson gson = new Gson();
-            return gson.fromJson(customerList, ArrayList<CustomerDetails.class>);
-
-            UserProfile profile = convertStringToUserProfile(stringUserDetails);
-            if(profile!=null){
-                return profile;
-            }
-        }
-        IntegrationUtility.Log("Object not available you may have to request UserDetails again returning NULL",context);
-        return null;
-    }*/
 }

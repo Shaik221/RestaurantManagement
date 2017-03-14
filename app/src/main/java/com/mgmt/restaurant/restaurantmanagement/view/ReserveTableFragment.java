@@ -1,11 +1,14 @@
 package com.mgmt.restaurant.restaurantmanagement.view;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.SharedPreferencesCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +27,12 @@ import com.mgmt.restaurant.restaurantmanagement.model.TablesDetails;
 import com.mgmt.restaurant.restaurantmanagement.model.adapters.CustomTableAdapter;
 import com.mgmt.restaurant.restaurantmanagement.presenter.GetTablesScreenPresenter;
 import com.mgmt.restaurant.restaurantmanagement.utils.ConnectivityReceiver;
+import com.mgmt.restaurant.restaurantmanagement.utils.LocalStoreCustomerDetails;
 import com.mgmt.restaurant.restaurantmanagement.utils.UserAlerts;
 import com.mgmt.restaurant.restaurantmanagement.view.widgets.TransparentProgressDialog;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -42,6 +47,8 @@ public class ReserveTableFragment extends Fragment implements View.OnClickListen
     GridView gridView;
     //progress dialog
     private TransparentProgressDialog pDialog;
+    //shared preference
+    SharedPreferences app_preferences;
 
     @Inject
     GetTablesScreenPresenter getTablesScreenPresenter;
@@ -103,6 +110,7 @@ public class ReserveTableFragment extends Fragment implements View.OnClickListen
 
     }
 
+
     private void showTableDataM(final ArrayList<TablesDetails> tablesDetails) {
 
         gridView.setAdapter(new CustomTableAdapter(getContext(), tablesDetails));
@@ -110,11 +118,17 @@ public class ReserveTableFragment extends Fragment implements View.OnClickListen
         //save data for offline support
         CustomerDetailsDatabaseHelper.getInstance(getActivity()).putTables(tablesDetails);
 
+
+
         gridView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
                 if(tablesDetails.get(position).isAvailable().equals("true"))
                 {
+                    //shared prefernce store
+                    LocalStoreCustomerDetails.getInstance().preserveDetails(getContext(),
+                            MainApplication.SHARED_PREF_KEY,firstName,lastName,position);
+
                     //loading confirmation  fragment
                     ReserveTableConfirmationFragment frag = new ReserveTableConfirmationFragment();
                     FragmentManager manager = getFragmentManager();
