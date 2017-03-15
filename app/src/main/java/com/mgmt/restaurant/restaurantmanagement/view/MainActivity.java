@@ -10,9 +10,6 @@ import com.mgmt.restaurant.restaurantmanagement.MainApplication;
 import com.mgmt.restaurant.restaurantmanagement.R;
 import com.mgmt.restaurant.restaurantmanagement.utils.LocalStoreCustomerDetails;
 
-import java.util.Calendar;
-import java.util.Date;
-
 public class MainActivity extends AppCompatActivity {
 
     @Override

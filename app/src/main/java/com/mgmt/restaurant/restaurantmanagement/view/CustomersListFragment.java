@@ -1,7 +1,6 @@
 package com.mgmt.restaurant.restaurantmanagement.view;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
@@ -32,7 +31,7 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 
-public class CustomersListFragment extends Fragment implements View.OnClickListener, CustomersListContract.View {
+public class CustomersListFragment extends Fragment implements CustomersListContract.View {
 
     private View currentView;
     private View view;
@@ -45,7 +44,6 @@ public class CustomersListFragment extends Fragment implements View.OnClickListe
 
     //progress dialog
     private TransparentProgressDialog pDialog;
-    private SQLiteDatabase db;
 
     @Inject
     GetCustomersScreenPresenter getCustomersScreenPresenter;
@@ -91,41 +89,10 @@ public class CustomersListFragment extends Fragment implements View.OnClickListe
 
         listView = (ListView) currentView.findViewById(R.id.list);
         if(customerDetailsList.size() > 0) {
-
             //save data for offline support
             CustomerDetailsDatabaseHelper.getInstance(getActivity()).putCustomers(customerDetailsList);
+            showCustomersList(customerDetailsList);
 
-            //LocalStoreCustomerDetails.getInstance().preserveCustomersList(getActivity(), "CustomersList", customerDetailsList);
-
-            adapter = new CustomersListAdapter(getActivity(), customerDetailsList);
-            listView.setAdapter(adapter);
-
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view,
-                                        int position, long id) {
-                    CustomerDetails currentData = customerDetailsList.get(position);
-
-                        String customerName = currentData.getCustomerFirstName();
-                        Toast.makeText(getActivity(), "Selected::"+customerName,Toast.LENGTH_SHORT).show();
-                        //loading tables list fragment
-                        ReserveTableFragment frag = new ReserveTableFragment();
-                        FragmentManager manager = getFragmentManager();
-                        FragmentTransaction transaction = manager.beginTransaction();
-                        transaction.replace(R.id.frgament_container,frag,"ReserveTableFragment");
-                        transaction.addToBackStack(null);
-
-                        //send data to other fragments
-                        Bundle args = new Bundle();
-                        args.putString("FirstName", currentData.getCustomerFirstName());
-                        args.putString("LastName", currentData.getCustomerLastName());
-                        frag.setArguments(args);
-
-                        transaction.commit();
-
-                }
-            });
         } else {
             Toast.makeText(getActivity(), "Customers List Empty", Toast.LENGTH_SHORT).show();
         }
@@ -222,14 +189,6 @@ public class CustomersListFragment extends Fragment implements View.OnClickListe
     @Override
     public void onResume(){
         super.onResume();
-    }
-
-    @Override
-    public void onClick(View v) {
-
-        switch (v.getId()) {
-
-        }
     }
 
 }
