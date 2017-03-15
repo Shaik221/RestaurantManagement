@@ -64,6 +64,7 @@ public class ReserveTableFragment extends Fragment implements TablesListContract
                 .tablesScreenModule(new TablesScreenModule(this))
                 .build().inject(this);
 
+
     }
 
     @Override
@@ -81,7 +82,9 @@ public class ReserveTableFragment extends Fragment implements TablesListContract
         firstName = getArguments().getString("FirstName");
         lastName = getArguments().getString("LastName");
 
+        //api to get all tables from service
         getAllTables();
+
         return view;
     }
 
@@ -105,7 +108,7 @@ public class ReserveTableFragment extends Fragment implements TablesListContract
         CustomerDetailsDatabaseHelper.getInstance(getContext()).clearTables();
         CustomerDetailsDatabaseHelper.getInstance(getActivity()).putTables(tablesDetails);
 
-        tablesDetails = new ArrayList<TablesDetails>();
+        //tablesDetails = new ArrayList<TablesDetails>();
         tablesDetails = CustomerDetailsDatabaseHelper.getInstance(getActivity()).getAllTablesFromDB();
         showTableDataM();
 
@@ -126,7 +129,7 @@ public class ReserveTableFragment extends Fragment implements TablesListContract
                 {
                     tablesDetails.get(position).setAvailable("false");
                     CustomerDetailsDatabaseHelper.getInstance(getActivity()).updateTable(tablesDetails.get(position));
-                    tablesDetails = new ArrayList<TablesDetails>();
+                    //tablesDetails = new ArrayList<TablesDetails>();
                     tablesDetails = CustomerDetailsDatabaseHelper.getInstance(getContext()).getAllTablesFromDB();
 
                     //shared prefernce store
@@ -157,8 +160,16 @@ public class ReserveTableFragment extends Fragment implements TablesListContract
     @Override
     public void showAllTables(final ArrayList<Boolean> tablesList)
     {
-        //show tables data
-        showTablesData(tablesList);
+        //check data in db if selections not exists then get the list from service
+        tablesDetails = CustomerDetailsDatabaseHelper.getInstance(getActivity()).getAllTablesFromDB();
+        if(tablesDetails.size() > 0)
+        {
+            showTableDataM();
+        } else {
+            //show tables data from service
+            showTablesData(tablesList);
+        }
+
     }
 
     @Override
@@ -182,7 +193,7 @@ public class ReserveTableFragment extends Fragment implements TablesListContract
         //get customers list from offline
         if(CustomerDetailsDatabaseHelper.getInstance(getActivity()) != null )
         {
-            tablesDetails = new ArrayList<TablesDetails>();
+            //tablesDetails = new ArrayList<TablesDetails>();
             tablesDetails = CustomerDetailsDatabaseHelper.getInstance(getActivity()).getAllTablesFromDB();
             showTableDataM();
         }

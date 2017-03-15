@@ -19,17 +19,19 @@ public class MainActivity extends AppCompatActivity {
 
         //clear the reservation details for the interval of 10 min
         SharedPreferences preferences = getSharedPreferences(MainApplication.SHARED_PREF_KEY, MODE_PRIVATE);
-        int storedTime = preferences.getInt("CurrentTime",0);
+        int storedTime = preferences.getInt("CurrentTime", 0);
 
-        if (preferences != null && storedTime >= MainApplication.TIME_INTERVAL ) {
-            LocalStoreCustomerDetails.getInstance().clearDetails(getApplicationContext(),MainApplication.SHARED_PREF_KEY);
+        if (preferences != null && storedTime >= MainApplication.TIME_INTERVAL) {
+            LocalStoreCustomerDetails.getInstance().clearDetails(getApplicationContext(), MainApplication.SHARED_PREF_KEY);
         }
+
 
         //loading customers list fragment
         CustomersListFragment frag = new CustomersListFragment();
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.frgament_container,frag,"CustomersListFragment");
+        transaction.add(R.id.frgament_container, frag, "CustomersListFragment");
         transaction.commit();
+
     }
 }
