@@ -8,7 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.mgmt.restaurant.restaurantmanagement.MainApplication;
 import com.mgmt.restaurant.restaurantmanagement.R;
+import com.mgmt.restaurant.restaurantmanagement.db.CustomerDetailsDatabaseHelper;
 import com.mgmt.restaurant.restaurantmanagement.utils.LocalStoreCustomerDetails;
+
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,9 +23,12 @@ public class MainActivity extends AppCompatActivity {
         //clear the reservation details for the interval of 10 min
         SharedPreferences preferences = getSharedPreferences(MainApplication.SHARED_PREF_KEY, MODE_PRIVATE);
         int storedTime = preferences.getInt("CurrentTime", 0);
+        int currentTime = Calendar.getInstance().get(Calendar.MINUTE);
+        int timeInterval = currentTime-storedTime;
 
-        if (preferences != null && storedTime >= MainApplication.TIME_INTERVAL) {
+        if (preferences != null && timeInterval >= MainApplication.TIME_INTERVAL) {
             LocalStoreCustomerDetails.getInstance().clearDetails(getApplicationContext(), MainApplication.SHARED_PREF_KEY);
+            CustomerDetailsDatabaseHelper.getInstance(getApplicationContext()).clearTables();
         }
 
 
