@@ -32,7 +32,7 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-public class ReserveTableFragment extends Fragment implements View.OnClickListener,TablesListContract.View  {
+public class ReserveTableFragment extends Fragment implements TablesListContract.View  {
 
     private View currentView;
     private View view;
@@ -100,17 +100,22 @@ public class ReserveTableFragment extends Fragment implements View.OnClickListen
             }
         }
 
-        showTableDataM(tablesDetails);
+
+        //save data for offline support
+        CustomerDetailsDatabaseHelper.getInstance(getContext()).clearTables();
+        CustomerDetailsDatabaseHelper.getInstance(getActivity()).putTables(tablesDetails);
+
+        tablesDetails = new ArrayList<TablesDetails>();
+        tablesDetails = CustomerDetailsDatabaseHelper.getInstance(getActivity()).getAllTablesFromDB();
+        showTableDataM();
 
     }
 
 
-    private void showTableDataM(final ArrayList<TablesDetails> tablesDetails) {
+    private void showTableDataM() {
+
 
         gridView.setAdapter(new CustomTableAdapter(getContext(), tablesDetails));
-
-        //save data for offline support
-        CustomerDetailsDatabaseHelper.getInstance(getActivity()).putTables(tablesDetails);
 
         gridView.invalidateViews();
 
@@ -120,11 +125,9 @@ public class ReserveTableFragment extends Fragment implements View.OnClickListen
                 if(tablesDetails.get(position).isAvailable().equals("true"))
                 {
                     tablesDetails.get(position).setAvailable("false");
-                    tablesDetails.remove(tablesDetails.get(position));
-
-                    TablesDetails obj = new TablesDetails(position,"false");
-                    tablesDetails.add(obj);
-
+                    CustomerDetailsDatabaseHelper.getInstance(getActivity()).updateTable(tablesDetails.get(position));
+                    tablesDetails = new ArrayList<TablesDetails>();
+                    tablesDetails = CustomerDetailsDatabaseHelper.getInstance(getContext()).getAllTablesFromDB();
 
                     //shared prefernce store
                     LocalStoreCustomerDetails.getInstance().preserveDetails(getContext(),
@@ -179,8 +182,9 @@ public class ReserveTableFragment extends Fragment implements View.OnClickListen
         //get customers list from offline
         if(CustomerDetailsDatabaseHelper.getInstance(getActivity()) != null )
         {
-            ArrayList<TablesDetails> tablesList = CustomerDetailsDatabaseHelper.getInstance(getActivity()).getAllTables();
-            showTableDataM(tablesList);
+            tablesDetails = new ArrayList<TablesDetails>();
+            tablesDetails = CustomerDetailsDatabaseHelper.getInstance(getActivity()).getAllTablesFromDB();
+            showTableDataM();
         }
         UserAlerts.showSnackBar(coordinatorLayout,getString(R.string.alert_offline));
     }
@@ -219,13 +223,9 @@ public class ReserveTableFragment extends Fragment implements View.OnClickListen
     @Override
     public void onResume(){
         super.onResume();
-    }
-
-    @Override
-    public void onClick(View v) {
-
-        switch (v.getId()) {
-
+        if(gridView!=null && tablesDetails!=null) {
+            gridView.setAdapter(new CustomTableAdapter(getContext(), tablesDetails));
+            gridView.invalidateViews();
         }
     }
 

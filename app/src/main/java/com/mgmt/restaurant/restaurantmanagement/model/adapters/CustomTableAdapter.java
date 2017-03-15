@@ -38,7 +38,7 @@ public class CustomTableAdapter extends BaseAdapter {
 			mViewHolder = (CustomTableAdapter.MyViewHolder) convertView.getTag();
 		}
 
-		currentTableStatus = getItem(position);
+		currentTableStatus = myList.get(position).isAvailable().equals("true");
 
 		if(currentTableStatus) {
 			mViewHolder.tableIcon.setImageResource(R.drawable.green_table_icon);
@@ -65,7 +65,7 @@ public class CustomTableAdapter extends BaseAdapter {
 
 	@Override
 	public Boolean getItem(int position) {
-		return myList.get(position).isAvailable().equals("true");
+		return true;
 	}
 
 	@Override

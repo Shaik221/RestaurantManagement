@@ -148,6 +148,10 @@ public class CustomerDetailsDatabaseHelper extends SQLiteOpenHelper {
         return comment;
     }
 
+    public void clearTables(){
+        getWritableDatabase().execSQL("DROP TABLE IF EXISTS " + TABLE_RESERVE);
+        getWritableDatabase().execSQL(CREATE_RESERVE_TABLE);
+    }
 
     public void putTables(List<TablesDetails> tablesList){
         if(tablesList!=null && tablesList.size()>0){
@@ -155,6 +159,16 @@ public class CustomerDetailsDatabaseHelper extends SQLiteOpenHelper {
                 createTable(tablesList.get(i));
             }
         }
+    }
+
+    public long updateTable(TablesDetails cust) {
+        ContentValues values = new ContentValues();
+        SQLiteDatabase database = getWritableDatabase();
+        values.put(TABLE_AVILABLE, cust.isAvailable());
+
+        long insertId = database.update(TABLE_RESERVE, values,
+                KEY_TABLE_ID + "=" + cust.getTableNo(),null);
+        return insertId;
     }
 
     public long createTable(TablesDetails cust) {
@@ -168,7 +182,7 @@ public class CustomerDetailsDatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public ArrayList<TablesDetails> getAllTables() {
+    public ArrayList<TablesDetails> getAllTablesFromDB() {
         ArrayList<TablesDetails> comments = new ArrayList<TablesDetails>();
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(TABLE_RESERVE,
